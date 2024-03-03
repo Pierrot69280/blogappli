@@ -1,3 +1,11 @@
+html {
+    overflow-x: hidden;
+}
+
 body {
-    background-color: skyblue;
+    /*background-color: skyblue;*/
+}
+
+.btnReturn {
+    margin-left: 10cm;
 }
