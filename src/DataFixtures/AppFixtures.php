@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -22,6 +23,13 @@ class AppFixtures extends Fixture
 
         }
 
-        $manager->flush();
+        for($j=0;$j<=3;$j++){
+
+            $comment = new Comment();
+            $comment->setContent($faker->sentence);
+            $manager->persist($comment);
+        }
+
+//        $manager->flush();
     }
 }
