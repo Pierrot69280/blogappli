@@ -29,6 +29,7 @@ class ArticleController extends AbstractController
     #[Route ('/article/{id}', name: 'app_article')]
     public function show(Article $article):Response
     {
+        if(!$this->getUser()){return $this->redirectToRoute("app_articles");}
 
         $comment = new Comment();
         $form = $this->createForm(CommentType::class,$comment);
