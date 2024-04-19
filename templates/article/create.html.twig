@@ -21,6 +21,15 @@
                             {{ form_widget(formulaire.description, {'attr': {'class': 'form-control'}}) }}
                         </div>
 
+                        <div class="mb-3">
+                            {{ form_label(formulaire.category, 'Category :', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formulaire.category, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(formulaire.imageFile, 'Category', {'label_attr': {'class': 'form-label required'}}) }}
+                            {{ form_widget(formulaire.imageFile, {'attr': {'class': 'form-control', 'placeholder': 'Your text goes here, also you can optionally upload an image'}}) }}
+                        </div>
 
                         <button type="submit" class="btn btn-success">Ajouter <i class="bi bi-file-earmark-plus"></i></button>
                         {{ form_end(formulaire) }}

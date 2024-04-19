@@ -18,6 +18,7 @@
                         <div class="article_images">
                             <img style="max-width: 100%" src="{{ vich_uploader_asset(article, 'imageFile') }}" alt="">
                         </div>
+                        <h3 class="card-text mt-3">Catégorie : {{ article.category.name }}</h3>
 
                         <hr>
 
@@ -25,8 +26,10 @@
 
                         <hr>
                         <div>
-                            <a class="btn" href="{{ path('app_delete', {id:article.id} ) }}"><i class="bi bi-trash"></i></a>
-                            <a class="btn" href="{{ path('app_edit', {id:article.id} ) }}"><i class="bi bi-pencil-square"></i></a>
+                            {% if app.user and article.author == app.user %}
+                                <a class="btn" href="{{ path('app_delete', {id:article.id} ) }}"><i class="bi bi-trash"></i></a>
+                                <a class="btn" href="{{ path('app_edit', {id:article.id} ) }}"><i class="bi bi-pencil-square"></i></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -43,18 +46,16 @@
                                     <p>{{ comment.content }}</p>
 
                                     <div>
-                                        <a class="btn" href="{{ path('app_comment_edit', {id:comment.id} ) }}"><i class="bi bi-pencil-square"></i></a>
-                                        <a class="btn" href="{{ path('app_comment_delete', {id:comment.id} ) }}"><i class="bi bi-trash"></i></a>
+                                        {% if app.user and comment.author == app.user %}
+                                            <a class="btn" href="{{ path('app_comment_edit', {id:comment.id} ) }}"><i class="bi bi-pencil-square"></i></a>
+                                            <a class="btn" href="{{ path('app_comment_delete', {id:comment.id} ) }}"><i class="bi bi-trash"></i></a>
+                                        {% endif %}
+                                        {% include 'like/button.html.twig' with { routeName:"comment_like", object:comment } %}
+                                        <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                                     </div>
-
-
                                 </div>
-
-
                             {% endfor %}
-
                         </div>
-
 
                         {{ form_start(form, {'attr': {'class': 'comment-form', 'action': path("app_comment_create", {'id': article.id})}}) }}
                         <div class="form-group d-flex">
@@ -62,10 +63,13 @@
                             <button type="submit" class="btn"><i class="bi bi-send"></i></button>
                         </div>
                         {{ form_end(form) }}
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {% if app.user %}
+        <script src="{{ asset('like.js') }}"></script>
+    {% endif %}
 {% endblock %}

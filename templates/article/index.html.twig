@@ -3,31 +3,47 @@
 {% block title %}Les Articles{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for article in articles %}
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ article.name }}</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for article in articles %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.name }}</h5>
 
-                            <div class="article_images">
-                                <img style="max-width: 100%" src="{{ vich_uploader_asset(article, 'imageFile') }}" alt="">
+                                <h6 class="card-text mt-3">Catégorie : {{ article.category.name }}</h6>
+
+                                <div class="article_images">
+                                    <img style="max-width: 100%" src="{{ vich_uploader_asset(article, 'imageFile') }}" alt="">
+                                </div>
+
+                                <hr>
+
+                                <p class="card-text">{{ article.description }}</p>
+                                {{ article.author.email }}
+
+                                <hr>
+
+                                <div class="d-flex justify-content-end">
+                                    {% include 'like/button.html.twig' with { routeName:"app_like", object:article } %}
+                                </div>
+                                <a class="btn btn-primary" href="{{ path("app_article",{id:article.id}) }}">Consulter l'article</a>
+                                <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                             </div>
-
-                            <hr>
-
-                            <p class="card-text">{{ article.description }}</p>
-
-                            <hr>
-
-                            <a class="btn btn-primary" href="{{ path("app_article",{id:article.id}) }}">Consulter l'article</a>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
+
+    {% if app.user %}
+        <script src="{{ asset('like.js') }}"></script>
+    {% endif %}
+
 {% endblock %}
+
+
+
+

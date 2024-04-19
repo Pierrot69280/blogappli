@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ArticleController extends AbstractController
 {
-    #[Route('/articles', name: 'app_articles')]
+    #[Route('/', name: 'app_articles')]
     public function index(ArticleRepository $articleRepository): Response
     {
         $articles = $articleRepository->findAll();
@@ -42,14 +42,16 @@ class ArticleController extends AbstractController
     #[Route('/create', name: 'app_create')]
     public function create(Request $request, EntityManagerInterface $manager):Response
     {
+        if(!$this->getUser()){return $this->redirectToRoute("app_articles");}
 
         $article = new Article();
         $form =  $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
+            $article->setCreatedAt(new \DateTime());
+            $article->setAuthor($this->getUser());
             $manager->persist($article);
-
             $manager->flush();
 
             return $this->redirectToRoute('app_articles', ["id"=>$article->getId()]);
@@ -64,10 +66,17 @@ class ArticleController extends AbstractController
     #[Route('/article/delete/{id}', name:'app_delete')]
     public function delete(Article $article, EntityManagerInterface $manager):Response
     {
-        $manager->remove($article);
-        $manager->flush();
+        if($this->getUser() === $article->getAuthor()) {
 
-        return $this->redirectToRoute("app_articles");
+
+            $manager->remove($article);
+            $manager->flush();
+
+            return $this->redirectToRoute("app_articles");
+        }else{
+            return $this->redirectToRoute("app_articles");
+
+        }
     }
 
     #[Route('/edit/{id}',name: 'app_edit')]
@@ -75,14 +84,19 @@ class ArticleController extends AbstractController
     {
 
         $formulaire = $this->createForm(ArticleType::class,$article);
-        $formulaire->handleRequest($request);
-        if($formulaire->isSubmitted() && $formulaire->isValid())
-        {
-            $manager->persist($article);
+        if($this->getUser() === $article->getAuthor()) {
 
-            $manager->flush();
 
-            return $this->redirectToRoute('app_article', ["id"=>$article->getId()]);
+            $formulaire->handleRequest($request);
+            if ($formulaire->isSubmitted() && $formulaire->isValid()) {
+                $article->setCreatedAt(new \DateTime());
+                $manager->persist($article);
+                $manager->flush();
+
+                return $this->redirectToRoute("app_article", ["id" => $article->getId()]);
+            }
+        }else{
+            return $this->redirectToRoute('app_articles');
         }
 
 

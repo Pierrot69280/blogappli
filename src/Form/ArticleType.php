@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Article;
+use App\Entity\Category;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,7 +18,10 @@ class ArticleType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('imageFile', VichImageType::class, [
-                'label'=>"Image de l'article",
+                'label'=>"Image de l'article"])
+            ->add('category', EntityType::class, [
+                'class'=>Category::class,
+                'choice_label'=>'name',
             ]);
     }
 

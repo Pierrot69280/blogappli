@@ -16,13 +16,18 @@ class CommentController extends AbstractController
     #[Route('/comment/create/{id}', name: 'app_comment_create')]
     public function create(Request $request, EntityManagerInterface $manager, Article $article): Response
     {
+
+        if(!$this->getUser()){return $this->redirectToRoute("app_articles");}
+
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setAuthor($this->getUser());
             $comment->setArticle($article);
             $manager->persist($comment);
             $manager->flush();
+
         }
         return $this->redirectToRoute("app_article", ["id" => $article->getId()]);
     }
@@ -30,27 +35,37 @@ class CommentController extends AbstractController
     #[Route('/comment/delete/{id}', name:'app_comment_delete')]
     public function delete(Comment $comment, EntityManagerInterface $manager):Response
     {
-        $pizza = $comment->getArticle();
-        $manager->remove($comment);
-        $manager->flush();
+        $article = $comment->getArticle();
+        if($this->getUser() === $comment->getAuthor()) {
 
-        return $this->redirectToRoute("app_article", ["id"=>$pizza->getId()]);
+            $manager->remove($comment);
+            $manager->flush();
+
+            return $this->redirectToRoute("app_article", ["id" => $article->getId()]);
+        }else{
+            return $this->redirectToRoute("app_articles");
+
+        }
     }
-
 
     #[Route('/comment/edit/{id}', name: 'app_comment_edit')]
     public function edit(Request $request, EntityManagerInterface $manager, Comment $comment):Response
     {
         $article = $comment->getArticle();
         $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($comment);
-            $manager->flush();
+        if($this->getUser() === $comment->getAuthor()) {
 
-            return $this->redirectToRoute("app_article", ["id" => $article->getId()]);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $manager->persist($comment);
+                $manager->flush();
+
+                return $this->redirectToRoute("app_article", ["id" => $article->getId()]);
+            }
+        }else{
+            return $this->redirectToRoute('app_articles');
         }
-
 
         return $this->render('comment/edit.html.twig', [
             'controller_name' => 'ArticleController',
