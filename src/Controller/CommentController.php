@@ -25,6 +25,7 @@ class CommentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setAuthor($this->getUser());
             $comment->setArticle($article);
+            $comment->setCreatedAt(new \DateTimeImmutable());
             $manager->persist($comment);
             $manager->flush();
 

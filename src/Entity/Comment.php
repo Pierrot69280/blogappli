@@ -30,6 +30,9 @@ class Comment
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'comment', cascade: ['remove'])]
     private Collection $likes;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
 
     public function __construct()
     {
@@ -117,5 +120,17 @@ class Comment
             }
         }
         return $isLiked;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 }

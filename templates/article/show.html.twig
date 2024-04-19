@@ -31,6 +31,8 @@
                                 <a class="btn" href="{{ path('app_edit', {id:article.id} ) }}"><i class="bi bi-pencil-square"></i></a>
                             {% endif %}
                         </div>
+                        <hr>
+                        <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                     </div>
                 </div>
 
@@ -42,24 +44,32 @@
                             <hr>
 
                             {% for comment in article.comments %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{ comment.author.email }}</p>
+                                    <div>Ecrit le {{ comment.createdAt|date("d/m/Y H:i") }}</div>
+                                </div>
+
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <p>{{ comment.content }}</p>
-
                                     <div>
                                         {% if app.user and comment.author == app.user %}
-                                            <a class="btn" href="{{ path('app_comment_edit', {id:comment.id} ) }}"><i class="bi bi-pencil-square"></i></a>
-                                            <a class="btn" href="{{ path('app_comment_delete', {id:comment.id} ) }}"><i class="bi bi-trash"></i></a>
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <a class="btn" href="{{ path('app_comment_edit', {id:comment.id} ) }}"><i class="bi bi-pencil-square"></i></a>
+                                                    <a class="btn" href="{{ path('app_comment_delete', {id:comment.id} ) }}"><i class="bi bi-trash"></i></a>
+                                                </div>
+                                            </div>
                                         {% endif %}
                                         {% include 'like/button.html.twig' with { routeName:"comment_like", object:comment } %}
-                                        <div>Ecrit le {{ article.createdAt|date("d/m/Y H:i") }}</div>
                                     </div>
                                 </div>
+                                <hr>
                             {% endfor %}
                         </div>
 
                         {{ form_start(form, {'attr': {'class': 'comment-form', 'action': path("app_comment_create", {'id': article.id})}}) }}
                         <div class="form-group d-flex">
-                            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Write your comment here...'}}) }}
+                            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Ecrit ton commentaire...'}}) }}
                             <button type="submit" class="btn"><i class="bi bi-send"></i></button>
                         </div>
                         {{ form_end(form) }}
