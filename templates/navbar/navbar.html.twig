@@ -6,34 +6,31 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('app_articles') }}">Articles</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('app_create') }}">Nouveau</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('app_category') }}">Les Catégories</a>
-                </li>
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('app_articles') }}">Articles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('app_create') }}">Nouveau</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('app_category') }}">Les Catégories</a>
+                    </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-fill"></i>
                     </a>
-                {% if app.user %}
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% if app.user %}
                             <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
-                        </ul>
-
-                    {% else %}
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% else %}
                             <li><a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_register') }}">Incription</a></li>
-                        </ul>
-                {% endif %}
+                            <li><a class="dropdown-item" href="{{ path('app_register') }}">Inscription</a></li>
+                        {% endif %}
+                    </ul>
                 </li>
             </ul>
         </div>
